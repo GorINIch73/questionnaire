@@ -12,67 +12,38 @@ QSqlRelationalDelegateFlt::QSqlRelationalDelegateFlt(QObject * parent) : QSqlRel
 
 QWidget *QSqlRelationalDelegateFlt::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    // сделано специализировано для одной колонки
+    QString field = "answer"; //имя поля с ответом для комбобокса
+    int field_id = 4; // номер поля вопроса для фильта - имя не срабатывает так как поле дополнительное
 
-    // стащил из родителя
     // выковыриваем модель
     const QSqlRelationalTableModel *sqlModel = qobject_cast<const QSqlRelationalTableModel *>(index.model());
 
     // выковыриваем связанную модель
     QSqlTableModel *childModel = sqlModel ? sqlModel->relationModel(index.column()) : nullptr;
 
-    // связь с вопросом - дает ссылку да полную запись строки - хз почему работает?
-    QSqlTableModel *childModelQ = sqlModel ? sqlModel->relationModel(sqlModel->fieldIndex("question")) : nullptr;
-    // не понятно почему работает, но используем это что бы получить ID подставляемого значения
-    //qDebug() << "main index: " << index.row();
-    //qDebug() << "индекс поля вопроса " << sqlModel->fieldIndex("question");
-    //запись для вопроса для текущей строки
-    //QSqlRecord rrZ = childModelQ->record(index.row());
-    //qDebug() << "record:"<< rrZ;
-    //qDebug() << "record: 0 : "<< rrZ.value(0).toString();
-    // ID вопроса
-    // не понятно почему работает, но используем это что бы получить ID подставляемого значения
-    //QString qss= childModelQ->record(index.row()).value(0).toString();
-
-    if (!childModel)
+    // магия только для колонки с вопросами, остальным по умолчанию
+    if (index.column()!=sqlModel->fieldIndex(field))
         return QSqlRelationalDelegate::createEditor(parent, option, index);
-
-    const QSqlDriver *const driver = childModel->database().driver();
 
     // настраиваем комбобокс
     QComboBox *combo = new QComboBox(parent);
     combo->setModel(childModel);
-    // получаем номер колонки
-    QString fn = sqlModel->relation(index.column()).displayColumn();
-    QString stripped = driver->isIdentifierEscaped(fn, QSqlDriver::FieldName) // имя связанного поля
-            ? driver->stripDelimiters(fn, QSqlDriver::FieldName)
-            : fn;
+    combo->setModelColumn(childModel->fieldIndex(field));
+    // получить id вопроса
+    //qDebug() <<childModel->fieldIndex("answers_data.question_id");
+    QString qss= sqlModel->record(index.row()).value(field_id).toString();
+    //установить фильтер
+    childModel->setFilter(QString("question_id = \%1 ").arg(qss));
 
-    //qDebug() << fn;
-    //qDebug() << stripped;  // имя связанного поля
+    combo->setEditable(true);
 
-    combo->setModelColumn(childModel->fieldIndex(stripped));
-    // надо настроить фильтр только для колонки с ответами
-    if (index.column()==sqlModel->fieldIndex("answer")) {
-        // получить id вопроса
-        QString qss= childModelQ->record(index.row()).value(0).toString();
-        //установить фильтер
-        childModel->setFilter(QString("question_id = \%1 ").arg(qss));
-        //childModel->select();
-    }
-
-
-    //настраиваем редактирование - врнмненно
-    combo->setEnabled(false);
-    if (index.column()==sqlModel->fieldIndex("answer")) {
-        combo->setEnabled(true);
-        combo->setEditable(true);
-    }
     // настраиваем комплитер
     QCompleter *mycompletear = new QCompleter(parent);
     mycompletear->setCaseSensitivity(Qt::CaseInsensitive);
     mycompletear->setFilterMode(Qt::MatchContains);
     mycompletear->setModel(childModel);
-    mycompletear->setCompletionColumn(childModel->fieldIndex(stripped)); // номер колонки с данными подстановки
+    mycompletear->setCompletionColumn(childModel->fieldIndex(field)); // номер колонки с данными подстановки
     combo->setCompleter(mycompletear);
 
 

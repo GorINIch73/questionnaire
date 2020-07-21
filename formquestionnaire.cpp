@@ -34,18 +34,16 @@ FormQuestionnaire::FormQuestionnaire(QSqlDatabase db,QWidget *parent) :
     //connect(mapper->sele ui->tableView_questions->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)), SLOT(slotSelectionChange(const QItemSelection &, const QItemSelection &)));
 
 
-    // придумать как листапть анкеты - вероятно взять индекс с комбобокса
-    mapper->toFirst();
+    mapper->toLast();
     modelAnswers_data->setFilter(QString("questionnaire_id = \%1 ").arg(modelQuestionnaire->data(modelQuestionnaire->index(mapper->currentIndex(), 0)).toString()));
     modelAnswers_data->select();
 
-//    int count = modelQuestionnaire->rowCount();
-//    qDebug() << "count: " << count;
-
-//    for(int i=0;i < count; i++)
-//    {
-//        qDebug() << modelQuestionnaire->record(i);
-//    }
+    int count = modelAnswers_data->rowCount();
+    qDebug() << "count: " << count;
+    for(int i=0;i < count; i++)
+    {
+        qDebug() << modelAnswers_data->record(i);
+    }
 }
 
 FormQuestionnaire::~FormQuestionnaire()
@@ -65,7 +63,6 @@ void FormQuestionnaire::SetupTable()
     modelQuestionnaire->setTable("questionnaire");
     modelQuestionnaire->setJoinMode(QSqlRelationalTableModel::LeftJoin); // что бы были видны пустые
     modelQuestionnaire->setRelation(modelQuestionnaire->fieldIndex("place_id"), QSqlRelation("place", "id", "name, place_id")); // дополнительное поле индекса
-    //modelQuestionnaire->setRelation(modelQuestionnaire->fieldIndex("place_id"), QSqlRelation("place", "id", "name"));
 
     // названия колонок
     //modelQuestionnaire->setHeaderData(1,Qt::Horizontal,"Вопрос");
@@ -85,10 +82,19 @@ void FormQuestionnaire::SetupTable()
     //Таблица данных ответов
     modelAnswers_data->setTable("answers_data");
     modelAnswers_data->setJoinMode(QSqlRelationalTableModel::LeftJoin); // что бы были видны пустые
-    modelAnswers_data->setRelation(2, QSqlRelation("questions", "id", "question"));
-    modelAnswers_data->setRelation(3, QSqlRelation("answers", "id", "answer"));
+//    modelAnswers_data->setRelation(2, QSqlRelation("questions", "id", "question"));
+//    qDebug() << modelAnswers_data->fieldIndex("answer_id");
+//    modelAnswers_data->setRelation(modelAnswers_data->fieldIndex("question_id"), QSqlRelation("questions", "id", "question, answers_data.question_id")); // дополнительное поле индекса
+    modelAnswers_data->setRelation(modelAnswers_data->fieldIndex("question_id"), QSqlRelation("questions", "id", "question")); // дополнительное поле индекса
+    // путает колонки хз что делать -----------------------------------------------------------------------------
+//    modelAnswers_data->setRelation(modelAnswers_data->fieldIndex("answer_id"), QSqlRelation("answers", "id", "answer")); // не сдвигается номер поля хз почему 3=4
+    modelAnswers_data->setRelation(3, QSqlRelation("answers", "id", "answer, answers_data.question_id")); // дополнительное поле индекса вопроса в конец, что бы небыло путаницы номеров полей
+//    modelAnswers_data->setRelation(4, QSqlRelation("answers", "id", "answer")); // не сдвигается номер поля хз почему 3=4
+
 
     // названия колонок
+//    modelAnswers_data->setHeaderData(modelAnswers_data->fieldIndex("questions.question"),Qt::Horizontal,"Вопрос");
+//    modelAnswers_data->setHeaderData(modelAnswers_data->fieldIndex("answers.answer"),Qt::Horizontal,"Ответ");
     modelAnswers_data->setHeaderData(2,Qt::Horizontal,"Вопрос");
     modelAnswers_data->setHeaderData(3,Qt::Horizontal,"Ответ");
     ui->tableView->setModel(modelAnswers_data);
