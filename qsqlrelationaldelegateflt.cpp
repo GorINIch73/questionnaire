@@ -12,6 +12,7 @@ QSqlRelationalDelegateFlt::QSqlRelationalDelegateFlt(QObject * parent) : QSqlRel
 
 QWidget *QSqlRelationalDelegateFlt::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+
     // сделано специализировано для одной колонки
     QString field = "answer"; //имя поля с ответом для комбобокса
     int field_id = 4; // номер поля вопроса для фильта - имя не срабатывает так как поле дополнительное
@@ -22,9 +23,10 @@ QWidget *QSqlRelationalDelegateFlt::createEditor(QWidget *parent, const QStyleOp
     // выковыриваем связанную модель
     QSqlTableModel *childModel = sqlModel ? sqlModel->relationModel(index.column()) : nullptr;
 
-    // магия только для колонки с вопросами, остальным по умолчанию
+    // магия только для колонки с вопросами, остальным null
     if (index.column()!=sqlModel->fieldIndex(field))
-        return QSqlRelationalDelegate::createEditor(parent, option, index);
+        return nullptr;
+//        return QSqlRelationalDelegate::createEditor(parent, option, index);
 
     // настраиваем комбобокс
     QComboBox *combo = new QComboBox(parent);
@@ -41,7 +43,8 @@ QWidget *QSqlRelationalDelegateFlt::createEditor(QWidget *parent, const QStyleOp
     // настраиваем комплитер
     QCompleter *mycompletear = new QCompleter(parent);
     mycompletear->setCaseSensitivity(Qt::CaseInsensitive);
-    mycompletear->setFilterMode(Qt::MatchContains);
+    //mycompletear->setFilterMode(Qt::MatchContains);
+    mycompletear->setCompletionMode(QCompleter::InlineCompletion);
     mycompletear->setModel(childModel);
     mycompletear->setCompletionColumn(childModel->fieldIndex(field)); // номер колонки с данными подстановки
     combo->setCompleter(mycompletear);

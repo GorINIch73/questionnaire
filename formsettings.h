@@ -20,7 +20,13 @@ private slots:
 
     void on_pushButton_File_clicked();
 
-    private:
+    void on_pushButton_clicked();
+
+    void on_pushButton_Create_clicked();
+
+    void on_pushButton_Dbl_clicked();
+
+private:
     Ui::FormSettings *ui;
 };
 

@@ -30,6 +30,8 @@ private slots:
 
     void on_actionPlace_triggered();
 
+    void on_actionReportMain_triggered();
+
 private:
     Ui::MainWindow *ui;
      //QMdiArea *mdiArea;

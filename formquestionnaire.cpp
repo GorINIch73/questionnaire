@@ -26,24 +26,34 @@ FormQuestionnaire::FormQuestionnaire(QSqlDatabase db,QWidget *parent) :
     //Настраиваем модели
     SetupTable();
 
+    //modelQuestionnaire->setFilter("questionnaire.id='250'");
+
     modelQuestionnaire->select();
     modelAnswers_data->select();
 
     //изменение анкеты
     //connect(ui-> myTableView->selectionModel(), &QItemSelectionModel::currentRowChanged, mapper, &QDataWidgetMapper::setCurrentModelIndex);
     //connect(mapper->sele ui->tableView_questions->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)), SLOT(slotSelectionChange(const QItemSelection &, const QItemSelection &)));
-
+    connect(ui->tableView->itemDelegate(),SIGNAL(closeEditor(QWidget*,QAbstractItemDelegate::EndEditHint)),SLOT(endEditSlot()));
 
     mapper->toLast();
-    modelAnswers_data->setFilter(QString("questionnaire_id = \%1 ").arg(modelQuestionnaire->data(modelQuestionnaire->index(mapper->currentIndex(), 0)).toString()));
-    modelAnswers_data->select();
+    // обновить ответы
+    TunAnswers_data();
+    //ui->tableView->selectRow(0);
+    ui->tableView->setFocus();
 
-    int count = modelAnswers_data->rowCount();
-    qDebug() << "count: " << count;
-    for(int i=0;i < count; i++)
-    {
-        qDebug() << modelAnswers_data->record(i);
-    }
+//    QModelIndex index = ui->tableView->model()->index(0, 3);
+//    ui->tableView->selectionModel()->select(index, QItemSelectionModel::Select);
+//    ui->tableView->setCurrentIndex(index);
+//    ui->tableView->setFocus();
+//    ui->tableView->edit(index);
+
+//    int count = modelAnswers_data->rowCount();
+//    qDebug() << "count: " << count;
+//    for(int i=0;i < count; i++)
+//    {
+//        qDebug() << modelAnswers_data->record(i);
+//    }
 }
 
 FormQuestionnaire::~FormQuestionnaire()
@@ -82,31 +92,41 @@ void FormQuestionnaire::SetupTable()
     //Таблица данных ответов
     modelAnswers_data->setTable("answers_data");
     modelAnswers_data->setJoinMode(QSqlRelationalTableModel::LeftJoin); // что бы были видны пустые
-//    modelAnswers_data->setRelation(2, QSqlRelation("questions", "id", "question"));
 //    qDebug() << modelAnswers_data->fieldIndex("answer_id");
-//    modelAnswers_data->setRelation(modelAnswers_data->fieldIndex("question_id"), QSqlRelation("questions", "id", "question, answers_data.question_id")); // дополнительное поле индекса
+//    modelAnswers_data->setRelation(modelAnswers_data->fieldIndex("question_id"), QSqlRelation("questions", "id", "question, answers_data.question_id")); // дополнительное поле индекса - перенесено в конец
     modelAnswers_data->setRelation(modelAnswers_data->fieldIndex("question_id"), QSqlRelation("questions", "id", "question")); // дополнительное поле индекса
     // путает колонки хз что делать -----------------------------------------------------------------------------
-//    modelAnswers_data->setRelation(modelAnswers_data->fieldIndex("answer_id"), QSqlRelation("answers", "id", "answer")); // не сдвигается номер поля хз почему 3=4
-    modelAnswers_data->setRelation(3, QSqlRelation("answers", "id", "answer, answers_data.question_id")); // дополнительное поле индекса вопроса в конец, что бы небыло путаницы номеров полей
-//    modelAnswers_data->setRelation(4, QSqlRelation("answers", "id", "answer")); // не сдвигается номер поля хз почему 3=4
+    modelAnswers_data->setRelation(modelAnswers_data->fieldIndex("answer_id"), QSqlRelation("answers", "id", "answer, answers_data.question_id")); // дополнительное поле индекса вопроса в конец, что бы небыло путаницы номеров полей
 
 
     // названия колонок
-//    modelAnswers_data->setHeaderData(modelAnswers_data->fieldIndex("questions.question"),Qt::Horizontal,"Вопрос");
-//    modelAnswers_data->setHeaderData(modelAnswers_data->fieldIndex("answers.answer"),Qt::Horizontal,"Ответ");
+    modelAnswers_data->setHeaderData(modelAnswers_data->fieldIndex("question"),Qt::Horizontal,"Вопрос");
+    modelAnswers_data->setHeaderData(modelAnswers_data->fieldIndex("answer"),Qt::Horizontal,"Ответ");
     modelAnswers_data->setHeaderData(2,Qt::Horizontal,"Вопрос");
     modelAnswers_data->setHeaderData(3,Qt::Horizontal,"Ответ");
     ui->tableView->setModel(modelAnswers_data);
     ui->tableView->setItemDelegate(a_delegate);
 
-   // ui->tableView_questions->setColumnHidden(0, true);    // Скрываем колонку с id записей
-    //ui->tableView_answers->setEditTriggers(QAbstractItemView::NoEditTriggers);  //запрет редактирования
-    ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows); // Разрешаем выделение строк
+    ui->tableView->setColumnHidden(0, true);    // Скрываем колонку с id записей
+    ui->tableView->setColumnHidden(1, true);    // Скрываем колонку
+    ui->tableView->setColumnHidden(99, true);    // Скрываем колонку  - не срабатывает ((
+    //ui->tableView>setEditTriggers(QAbstractItemView::NoEditTriggers);  //запрет редактирования
+    //ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows); // Разрешаем выделение строк
     ui->tableView->setSelectionMode(QAbstractItemView::SingleSelection); // Устанавливаем режим выделения лишь одно строки в таблице
-    ui->tableView->horizontalHeader()->setStretchLastSection(true);
-    ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents); // по содержимому
+    //ui->tableView->horizontalHeader()->setStretchLastSection(true);
+    //ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents); // по содержимому
+    ui->tableView->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
+    ui->tableView->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
+    //ui->tableView->setSelectionModel();
 
+
+}
+
+void FormQuestionnaire::TunAnswers_data()
+{
+    // настройка фильтра ответов по номеру анкеты
+    modelAnswers_data->setFilter(QString("questionnaire_id = \%1 ").arg(modelQuestionnaire->data(modelQuestionnaire->index(mapper->currentIndex(), modelQuestionnaire->fieldIndex("id"))).toString()));
+    modelAnswers_data->select();
 }
 
 void FormQuestionnaire::on_pushButton_Add_clicked()
@@ -186,9 +206,8 @@ void FormQuestionnaire::on_pushButton_Add_clicked()
     if (!query.exec(sq))
         qDebug() << "Ошибка формирования перечня вопросов: " << query.lastError().text();
 
-    // обновить
-    modelAnswers_data->setFilter(QString("questionnaire_id = \%1 ").arg(modelQuestionnaire->data(modelQuestionnaire->index(mapper->currentIndex(), modelQuestionnaire->fieldIndex("id"))).toString()));
-    modelAnswers_data->select();
+    // обновить ответы
+    TunAnswers_data();
 
     // устанавливаем курсор на строку редактирования
     ui->tableView->selectRow(0);
@@ -197,6 +216,27 @@ void FormQuestionnaire::on_pushButton_Add_clicked()
 
 void FormQuestionnaire::on_pushButton_Del_clicked()
 {
+// удаление анкеты
+    if(QMessageBox::Yes != QMessageBox::question(this, tr("Внимание!"),
+                                                 tr("Уверены в удалении анкеты?")))  return;
+
+    // удаляем принадлежащие анкете ответы
+    QSqlQuery query = QSqlQuery(base);
+    query.prepare("DELETE FROM answers_data WHERE id=:id");
+    query.bindValue(":id",modelQuestionnaire->data(modelQuestionnaire->index(mapper->currentIndex(),modelQuestionnaire->fieldIndex("id"))).toString());
+    if (!query.exec())
+        qDebug() << "Ошибка удаления ответов: " << query.lastError().text();
+
+// удаляем саму анкету
+    int row=mapper->currentIndex();
+    modelQuestionnaire->removeRow(row);
+    modelQuestionnaire->select();
+
+    //прыгаем на предыдущую запись
+    mapper->setCurrentIndex(row-1);
+
+    // обновить ответы
+    TunAnswers_data();
 
 }
 
@@ -205,9 +245,8 @@ void FormQuestionnaire::on_pushButton_First_clicked()
     // прыгаем на первую
     //mapper->setCurrentIndex(0);
     mapper->toFirst();
-    modelAnswers_data->setFilter(QString("questionnaire_id = \%1 ").arg(modelQuestionnaire->data(modelQuestionnaire->index(mapper->currentIndex(), 0)).toString()));
-    modelAnswers_data->select();
-
+    // обновить ответы
+    TunAnswers_data();
 
 }
 
@@ -220,8 +259,8 @@ void FormQuestionnaire::on_pushButton_Prev_clicked()
 //        qDebug() << row;
 //     }
     mapper->toPrevious();
-    modelAnswers_data->setFilter(QString("questionnaire_id = \%1 ").arg(modelQuestionnaire->data(modelQuestionnaire->index(mapper->currentIndex(), 0)).toString()));
-    modelAnswers_data->select();
+    // обновить ответы
+    TunAnswers_data();
 
 }
 
@@ -235,8 +274,8 @@ void FormQuestionnaire::on_pushButton_Next_clicked()
     mapper->toNext();
 
 //    QString ff = QString("questionnaire_id = \%1 ").arg(modelQuestionnaire->data(modelQuestionnaire->index(mapper->currentIndex(), 0)).toString());
-    modelAnswers_data->setFilter(QString("questionnaire_id = \%1 ").arg(modelQuestionnaire->data(modelQuestionnaire->index(mapper->currentIndex(), 0)).toString()));
-    modelAnswers_data->select();
+    // обновить ответы
+    TunAnswers_data();
 
 }
 
@@ -245,8 +284,8 @@ void FormQuestionnaire::on_pushButton_Last_clicked()
 //    int row=modelQuestionnaire->rowCount();
 //    mapper->setCurrentIndex(row-1);
        mapper->toLast();
-       modelAnswers_data->setFilter(QString("questionnaire_id = \%1 ").arg(modelQuestionnaire->data(modelQuestionnaire->index(mapper->currentIndex(), 0)).toString()));
-       modelAnswers_data->select();
+       // обновить ответы
+       TunAnswers_data();
 
 }
 
@@ -257,12 +296,12 @@ void FormQuestionnaire::on_pushButton_Refr_clicked()
     // обновляем предстваления
     SetupTable();
     modelQuestionnaire->select();
-    modelAnswers_data->select();
+//    modelAnswers_data->select();
 
     // восстанавливаем курсор
     mapper->setCurrentIndex(row);
-    modelAnswers_data->setFilter(QString("questionnaire_id = \%1 ").arg(modelQuestionnaire->data(modelQuestionnaire->index(mapper->currentIndex(), 0)).toString()));
-    modelAnswers_data->select();
+    // обновить ответы
+    TunAnswers_data();
 
 
 }
@@ -272,4 +311,51 @@ void FormQuestionnaire::on_comboBox_Place_currentIndexChanged(int index)
     //иначе не сохраняет
     mapper->submit();
     modelQuestionnaire->submit();
+}
+
+void FormQuestionnaire::endEditSlot()
+{
+    // обработка выхода из режима редактирования делегата таблицы
+    int row = ui->tableView->currentIndex().row();
+    int rowCount = ui->tableView->model()->rowCount();
+
+    //qDebug() << row << "-" << ui->tableView->model()->rowCount();
+    if (row >= rowCount-1)
+        return;
+    QModelIndex index = ui->tableView->model()->index(row+1, 3);
+    ui->tableView->selectionModel()->select(index, QItemSelectionModel::Select);
+    ui->tableView->setCurrentIndex(index);
+    ui->tableView->setFocus();
+    ui->tableView->edit(index);
+
+}
+
+void FormQuestionnaire::on_lineEdit_Flt_textChanged(const QString &arg1)
+{
+    // фильтр по номеру анкеты
+    if (!ui->lineEdit_Flt->text().isEmpty()) {
+
+        QString ff = QString("questionnaire.id = \%1 ").arg(arg1);
+//        QString ff = QString(" %1 Like '\%%2\%' ").arg("questionnaire.id", arg1);
+
+        modelQuestionnaire->setFilter(ff);
+        modelQuestionnaire->select();
+        mapper->toFirst();
+        // обновить ответы
+        TunAnswers_data();
+    }
+    else {
+        modelQuestionnaire->setFilter("");
+        modelQuestionnaire->select();
+        mapper->toFirst();
+        // обновить ответы
+        TunAnswers_data();
+    }
+
+}
+
+void FormQuestionnaire::on_pushButton_ClrFlt_clicked()
+{
+    // очистка фильта
+    ui->lineEdit_Flt->setText("");
 }

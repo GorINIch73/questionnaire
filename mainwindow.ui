@@ -51,6 +51,9 @@
    <addaction name="actionQuestionnaire"/>
    <addaction name="separator"/>
    <addaction name="actionEditQuestions"/>
+   <addaction name="separator"/>
+   <addaction name="actionReportMain"/>
+   <addaction name="separator"/>
    <addaction name="actionPlace"/>
    <addaction name="actionRegion"/>
    <addaction name="separator"/>
@@ -94,6 +97,14 @@
    </property>
    <property name="toolTip">
     <string>Места опроса (МО)</string>
+   </property>
+  </action>
+  <action name="actionReportMain">
+   <property name="text">
+    <string>Отчет</string>
+   </property>
+   <property name="toolTip">
+    <string>Отчет по анкетам</string>
    </property>
   </action>
  </widget>

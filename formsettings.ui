@@ -60,13 +60,20 @@
     </layout>
    </item>
    <item>
+    <widget class="QPushButton" name="pushButton_Dbl">
+     <property name="text">
+      <string>Dublicate</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <widget class="QCheckBox" name="checkBox">
          <property name="text">
-          <string>CheckBox</string>
+          <string>Не задействовано</string>
          </property>
         </widget>
        </item>
@@ -82,7 +89,7 @@
      <item>
       <widget class="QPushButton" name="pushButton">
        <property name="text">
-        <string>Clear base</string>
+        <string>Clear base Answers</string>
        </property>
       </widget>
      </item>

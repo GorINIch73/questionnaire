@@ -41,6 +41,12 @@ private slots:
 
     void on_comboBox_Place_currentIndexChanged(int index);
 
+    void endEditSlot();
+
+    void on_lineEdit_Flt_textChanged(const QString &arg1);
+
+    void on_pushButton_ClrFlt_clicked();
+
 private:
     Ui::FormQuestionnaire *ui;
 
@@ -52,6 +58,7 @@ private:
     QSqlRelationalDelegateFlt *a_delegate;
 
     void SetupTable();
+    void TunAnswers_data();
 };
 
 #endif // FORMQUESTIONNAIRE_H
