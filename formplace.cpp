@@ -43,7 +43,7 @@ void FormPlace::SetupTable()
     model->setHeaderData(3,Qt::Horizontal,"Для отчета");
     ui->tableView->setModel(model);
     ui->tableView->setItemDelegate(delegate);
-   // ui->tableView->setColumnHidden(0, true);    // Скрываем колонку с id записей
+    ui->tableView->setColumnHidden(0, true);    // Скрываем колонку с id записей
 //    ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);  //запрет редактирования
     ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows); // Разрешаем выделение строк
     ui->tableView->setSelectionMode(QAbstractItemView::SingleSelection); // Устанавливаем режим выделения лишь одно строки в таблице

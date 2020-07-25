@@ -39,32 +39,18 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QVBoxLayout" name="verticalLayout_3">
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Base name:</string>
+        <string>Config:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="lineEdit_NameBase"/>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButton_File">
-       <property name="text">
-        <string>...</string>
-       </property>
-      </widget>
+      <widget class="QTableView" name="tableView"/>
      </item>
     </layout>
-   </item>
-   <item>
-    <widget class="QPushButton" name="pushButton_Dbl">
-     <property name="text">
-      <string>Dublicate</string>
-     </property>
-    </widget>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -94,13 +80,6 @@
       </widget>
      </item>
     </layout>
-   </item>
-   <item>
-    <widget class="QPushButton" name="pushButton_Create">
-     <property name="text">
-      <string>Create base</string>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>

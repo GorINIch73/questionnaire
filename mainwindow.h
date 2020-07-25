@@ -32,6 +32,20 @@ private slots:
 
     void on_actionReportMain_triggered();
 
+    void on_actionOpenBase_triggered();
+
+    void on_actionCloseBase_triggered();
+
+    void on_actionExit_triggered();
+
+    void on_actionSaveAs_triggered();
+
+    void on_actionNewBase_triggered();
+
+    void on_actionReportS_triggered();
+
+    void on_actionAbout_triggered();
+
 private:
     Ui::MainWindow *ui;
      //QMdiArea *mdiArea;

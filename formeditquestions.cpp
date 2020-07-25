@@ -58,7 +58,7 @@ void FormEditQuestions::SetupTable()
     // названия колонок
     modelQuestions->setHeaderData(1,Qt::Horizontal,"Вопрос");
     ui->tableView_questions->setModel(modelQuestions);
-   // ui->tableView_questions->setColumnHidden(0, true);    // Скрываем колонку с id записей
+    ui->tableView_questions->setColumnHidden(0, true);    // Скрываем колонку с id записей
     ui->tableView_questions->setEditTriggers(QAbstractItemView::NoEditTriggers);  //запрет редактирования
     ui->tableView_questions->setSelectionBehavior(QAbstractItemView::SelectRows); // Разрешаем выделение строк
     ui->tableView_questions->setSelectionMode(QAbstractItemView::SingleSelection); // Устанавливаем режим выделения лишь одно строки в таблице
@@ -82,7 +82,8 @@ void FormEditQuestions::SetupTable()
     modelAnswers->setHeaderData(1,Qt::Horizontal,"Вопрос");
     modelAnswers->setHeaderData(2,Qt::Horizontal,"Ответ");
     ui->tableView_answers->setModel(modelAnswers);
-   // ui->tableView_questions->setColumnHidden(0, true);    // Скрываем колонку с id записей
+    ui->tableView_answers->setColumnHidden(0, true);    // Скрываем колонку с id записей
+    ui->tableView_answers->setColumnHidden(1, true);
     //ui->tableView_answers->setEditTriggers(QAbstractItemView::NoEditTriggers);  //запрет редактирования
     ui->tableView_answers->setSelectionBehavior(QAbstractItemView::SelectRows); // Разрешаем выделение строк
     ui->tableView_answers->setSelectionMode(QAbstractItemView::SingleSelection); // Устанавливаем режим выделения лишь одно строки в таблице

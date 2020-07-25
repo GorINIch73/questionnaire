@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>pix/main.png</file>
+    </qresource>
+    <qresource prefix="/n"/>
+</RCC>

@@ -36,6 +36,47 @@
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuBase">
+    <property name="title">
+     <string>Файл</string>
+    </property>
+    <addaction name="actionOpenBase"/>
+    <addaction name="actionCloseBase"/>
+    <addaction name="actionSaveAs"/>
+    <addaction name="separator"/>
+    <addaction name="actionNewBase"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuBase_2">
+    <property name="title">
+     <string>База</string>
+    </property>
+    <addaction name="actionQuestionnaire"/>
+    <addaction name="separator"/>
+    <addaction name="actionPlace"/>
+    <addaction name="actionRegion"/>
+    <addaction name="actionEditQuestions"/>
+   </widget>
+   <widget class="QMenu" name="menuRepotr">
+    <property name="title">
+     <string>Отчеты</string>
+    </property>
+    <addaction name="actionReportMain"/>
+    <addaction name="actionReportS"/>
+   </widget>
+   <widget class="QMenu" name="menuSettings">
+    <property name="title">
+     <string>Разное</string>
+    </property>
+    <addaction name="actionSettings"/>
+    <addaction name="separator"/>
+    <addaction name="actionAbout"/>
+   </widget>
+   <addaction name="menuBase"/>
+   <addaction name="menuBase_2"/>
+   <addaction name="menuRepotr"/>
+   <addaction name="menuSettings"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -50,16 +91,13 @@
    </attribute>
    <addaction name="actionQuestionnaire"/>
    <addaction name="separator"/>
-   <addaction name="actionEditQuestions"/>
-   <addaction name="separator"/>
    <addaction name="actionReportMain"/>
    <addaction name="separator"/>
-   <addaction name="actionPlace"/>
-   <addaction name="actionRegion"/>
-   <addaction name="separator"/>
-   <addaction name="actionSettings"/>
   </widget>
   <action name="actionQuestionnaire">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Анкеты</string>
    </property>
@@ -101,10 +139,60 @@
   </action>
   <action name="actionReportMain">
    <property name="text">
-    <string>Отчет</string>
+    <string>Отчет основной</string>
    </property>
    <property name="toolTip">
     <string>Отчет по анкетам</string>
+   </property>
+  </action>
+  <action name="actionOpenBase">
+   <property name="text">
+    <string>Открыть</string>
+   </property>
+   <property name="toolTip">
+    <string>Открыть базу данных</string>
+   </property>
+  </action>
+  <action name="actionCloseBase">
+   <property name="text">
+    <string>Закрыть</string>
+   </property>
+   <property name="toolTip">
+    <string>Закрыть базу</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Выход</string>
+   </property>
+  </action>
+  <action name="actionSaveAs">
+   <property name="text">
+    <string>Сохранить как</string>
+   </property>
+   <property name="toolTip">
+    <string>Сохранить как</string>
+   </property>
+  </action>
+  <action name="actionNewBase">
+   <property name="text">
+    <string>Новая база</string>
+   </property>
+   <property name="toolTip">
+    <string>Создать новую базу</string>
+   </property>
+  </action>
+  <action name="actionReportS">
+   <property name="text">
+    <string>Отчет по удовлетворенности</string>
+   </property>
+   <property name="toolTip">
+    <string>Отчет по удовлетворенности</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>О программе</string>
    </property>
   </action>
  </widget>
