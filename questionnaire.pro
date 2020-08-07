@@ -51,4 +51,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 win32:RC_ICONS = $$PWD/pix/main.ico
 
 RESOURCES += \
+    res.qrc \
     res.qrc
