@@ -39,28 +39,44 @@
      <item>
       <widget class="QPushButton" name="pushButton_First">
        <property name="text">
-        <string>&lt;&lt;</string>
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="res.qrc">
+         <normaloff>:/pix/bb.png</normaloff>:/pix/bb.png</iconset>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButton_Previous">
        <property name="text">
-        <string>&lt;</string>
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="res.qrc">
+         <normaloff>:/pix/b.png</normaloff>:/pix/b.png</iconset>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButton_Next">
        <property name="text">
-        <string>&gt;</string>
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="res.qrc">
+         <normaloff>:/pix/f.png</normaloff>:/pix/f.png</iconset>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButton_Last">
        <property name="text">
-        <string>&gt;&gt;</string>
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="res.qrc">
+         <normaloff>:/pix/ff.png</normaloff>:/pix/ff.png</iconset>
        </property>
       </widget>
      </item>
@@ -80,14 +96,22 @@
      <item>
       <widget class="QPushButton" name="pushButton_QAdd">
        <property name="text">
-        <string>+</string>
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="res.qrc">
+         <normaloff>:/pix/add.png</normaloff>:/pix/add.png</iconset>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButton_QDel">
        <property name="text">
-        <string>-</string>
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="res.qrc">
+         <normaloff>:/pix/del.png</normaloff>:/pix/del.png</iconset>
        </property>
       </widget>
      </item>
@@ -107,7 +131,17 @@
      <item>
       <widget class="QPushButton" name="pushButtonClose">
        <property name="text">
-        <string>Close</string>
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="res.qrc">
+         <normaloff>:/pix/exit.png</normaloff>:/pix/exit.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
        </property>
       </widget>
      </item>
@@ -190,6 +224,13 @@
         </layout>
        </item>
        <item>
+        <widget class="Line" name="line">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -216,14 +257,22 @@
            <item>
             <widget class="QPushButton" name="pushButton_AAdd">
              <property name="text">
-              <string>+</string>
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="res.qrc">
+               <normaloff>:/pix/add.png</normaloff>:/pix/add.png</iconset>
              </property>
             </widget>
            </item>
            <item>
             <widget class="QPushButton" name="pushButton_ADel">
              <property name="text">
-              <string>-</string>
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="res.qrc">
+               <normaloff>:/pix/del.png</normaloff>:/pix/del.png</iconset>
              </property>
             </widget>
            </item>
@@ -250,6 +299,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="res.qrc"/>
+ </resources>
  <connections/>
 </ui>

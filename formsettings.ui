@@ -32,7 +32,17 @@
      <item>
       <widget class="QPushButton" name="pushButtonClose">
        <property name="text">
-        <string>Close</string>
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="res.qrc">
+         <normaloff>:/pix/exit.png</normaloff>:/pix/exit.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
        </property>
       </widget>
      </item>
@@ -83,6 +93,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="res.qrc"/>
+ </resources>
  <connections/>
 </ui>

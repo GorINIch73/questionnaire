@@ -4,6 +4,8 @@
 #include <QtDebug>
 #include <QSqlRecord>
 #include <QSqlField>
+#include <QLineEdit>
+
 
 QSqlRelationalDelegateFlt::QSqlRelationalDelegateFlt(QObject * parent) : QSqlRelationalDelegate(parent)
 {
@@ -49,6 +51,8 @@ QWidget *QSqlRelationalDelegateFlt::createEditor(QWidget *parent, const QStyleOp
     mycompletear->setCompletionColumn(childModel->fieldIndex(field)); // номер колонки с данными подстановки
     combo->setCompleter(mycompletear);
 
+    // выделить текст
+//    combo->lineEdit()->selectAll();  не вышло!
 
     return combo;
 

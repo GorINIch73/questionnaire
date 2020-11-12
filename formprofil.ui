@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>FormRegion</class>
- <widget class="QWidget" name="FormRegion">
+ <class>FormProfil</class>
+ <widget class="QWidget" name="FormProfil">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>736</width>
-    <height>446</height>
+    <width>799</width>
+    <height>561</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -61,7 +61,7 @@
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer">
+      <spacer name="horizontalSpacer_3">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -85,7 +85,7 @@
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer_2">
+      <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -120,7 +120,7 @@
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer_3">
+      <spacer name="horizontalSpacer_2">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -133,7 +133,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButtonClose">
+      <widget class="QPushButton" name="pushButton_Close">
        <property name="text">
         <string/>
        </property>
