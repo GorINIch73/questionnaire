@@ -235,17 +235,17 @@
   </action>
   <action name="actionFile01">
    <property name="text">
-    <string>...</string>
+    <string/>
    </property>
   </action>
   <action name="actionFile02">
    <property name="text">
-    <string>...</string>
+    <string/>
    </property>
   </action>
   <action name="actionFile03">
    <property name="text">
-    <string>...</string>
+    <string/>
    </property>
   </action>
   <action name="actionProfil">
