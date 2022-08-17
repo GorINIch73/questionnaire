@@ -33,6 +33,10 @@ FormEditQuestions::FormEditQuestions(QSqlDatabase db,QWidget *parent) :
     connect(ui->tableView_questions->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
                  SLOT(slotSelectionChange(const QItemSelection &, const QItemSelection &)));
 
+    // сигнал изменения строки выделения в tableView_answers
+    connect(ui->tableView_answers->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+                 SLOT(slotSelectionAChange(const QItemSelection &, const QItemSelection &)));
+
     // Enter по умолчанию на кнопку редактирования
     //ui->pushButton_ ->setDefault(true);
     //устанавливаем таблицу на первую запись
@@ -72,6 +76,7 @@ void FormEditQuestions::SetupTable()
     mapper->addMapping(ui->checkBox_some_answers , 2);
     mapper->addMapping(ui->checkBox_be_empty, 3);
     mapper->addMapping(ui->checkBox_satisfaction, 4);
+    mapper->addMapping(ui->checkBox_profile_st, 5);
     mapper->setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
 
 
@@ -83,8 +88,8 @@ void FormEditQuestions::SetupTable()
     modelAnswers->setHeaderData(2,Qt::Horizontal,"Ответ");
     modelAnswers->setHeaderData(3,Qt::Horizontal,"Является показателем удовлетвореннсти");
     ui->tableView_answers->setModel(modelAnswers);
-    ui->tableView_answers->setColumnHidden(0, true);    // Скрываем колонку с id записей
-    ui->tableView_answers->setColumnHidden(1, true);
+    ui->tableView_answers->setColumnHidden(0, true);    // Скрываем колонку с id ответа
+    ui->tableView_answers->setColumnHidden(1, true);     // Скрываем колонку с id вопроса
     //ui->tableView_answers->setEditTriggers(QAbstractItemView::NoEditTriggers);  //запрет редактирования
     ui->tableView_answers->setSelectionBehavior(QAbstractItemView::SelectRows); // Разрешаем выделение строк
     ui->tableView_answers->setSelectionMode(QAbstractItemView::SingleSelection); // Устанавливаем режим выделения лишь одно строки в таблице
@@ -121,6 +126,16 @@ void FormEditQuestions::slotSelectionChange(const QItemSelection &current, const
 
     // при изменение строки в таблвьюве устанавливаем маппер на соответствующую запись
     mapper->setCurrentIndex(ui->tableView_questions->currentIndex().row());
+
+}
+
+void FormEditQuestions::slotSelectionAChange(const QItemSelection &current, const QItemSelection &previous)
+{
+
+    // выводим ID ответа в трей
+//    QString ff = QString(" ID вопроса: \%1 ").arg(modelAnswers->data(modelAnswers->index(ui->tableView_answers->currentIndex().row(), 0)).toString());
+    ui->lineEdit_ID_A->setText(modelAnswers->data(modelAnswers->index(ui->tableView_answers->currentIndex().row(), 0)).toString());
+
 
 }
 

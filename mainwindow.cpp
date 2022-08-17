@@ -209,7 +209,7 @@ void MainWindow::slot_goQuery(QString sq)
 
 void MainWindow::on_actionReportMain_triggered()
 {
-    // Отчет по анкетам основной
+    // Отчет по анкетам по местам проведения и профилям
 
     // формирование и печать
 
@@ -227,7 +227,8 @@ void MainWindow::on_actionReportMain_triggered()
 
     QSqlQuery a_query = QSqlQuery(database);
 //    QString query = "SELECT place.name, questionnaire.place_id, answers_data.question_id, questions.question, answer_id, answers.answer, count(answer_id) FROM answers_data  inner join questionnaire on answers_data.questionnaire_id=questionnaire.id inner join place on questionnaire.place_id=place.id inner join questions on answers_data.question_id = questions.id inner join answers on answer_id=answers.id group by answer_id, answers_data.question_id, questionnaire.place_id order by questionnaire.place_id, answers_data.question_id";
-    QString query = "SELECT place.name, profil.profil_name, questionnaire.place_id, answers_data.question_id, questions.question, answer_id, answers.answer, count(answer_id) FROM answers_data  inner join questionnaire on answers_data.questionnaire_id=questionnaire.id inner join place on questionnaire.place_id=place.id inner join profil on place.profil_id=profil.id inner join questions on answers_data.question_id = questions.id inner join answers on answer_id=answers.id group by answer_id, answers_data.question_id, questionnaire.place_id order by questionnaire.place_id, answers_data.question_id";
+//    QString query = "SELECT place.name, profil.profil_name, questionnaire.place_id, answers_data.question_id, questions.question, answer_id, answers.answer, count(answer_id) FROM answers_data  inner join questionnaire on answers_data.questionnaire_id=questionnaire.id inner join place on questionnaire.place_id=place.id inner join profil on place.profil_id=profil.id inner join questions on answers_data.question_id = questions.id inner join answers on answer_id=answers.id group by answer_id, answers_data.question_id, questionnaire.place_id order by questionnaire.place_id, answers_data.question_id";
+    QString query = "SELECT place.name, profil.profil_name, questionnaire.place_id, answers_data.question_id, questions.question, answer_id, answers.answer, count(answer_id) FROM answers_data  inner join questionnaire on answers_data.questionnaire_id=questionnaire.id inner join place on questionnaire.place_id=place.id inner join profil on place.profil_id=profil.id inner join questions on answers_data.question_id = questions.id inner join answers on answer_id=answers.id group by answer_id, answers_data.question_id, questionnaire.place_id order by questionnaire.place_id, questions.question, answers.answer";
     if (!a_query.exec(query)) {
          qDebug() << "Ошибка запроса отчета: " << a_query.lastError().text();
          return;
@@ -351,9 +352,9 @@ void MainWindow::on_actionReportMain_triggered()
 
     QPrinter printer(QPrinter::PrinterResolution);
     printer.setOutputFormat(QPrinter::PdfFormat);
-    printer.setPaperSize(QPrinter::A4);
+    //printer.setPaperSize(QPrinter::A4);
     printer.setOutputFileName("rep_plc.pdf");
-    printer.setPageMargins(QMarginsF(15, 15, 15, 15));
+    printer.setPageMargins(QMarginsF(1, 1, 1, 1));
 
     document.print(&printer);
 
@@ -363,6 +364,159 @@ void MainWindow::on_actionReportMain_triggered()
 
 
 }
+
+
+void MainWindow::on_actionReportMain_r_triggered()
+{
+    // Отчет по анкетам по районам
+
+    // формирование и печать
+
+    QString stringStream;
+    QTextStream out(&stringStream);
+
+    // запрос
+    // база открыта?
+    if(!database.isOpen()){
+          qDebug() << "База не открыта!";
+          QMessageBox::critical(this,"Error","База не открыта!");
+          return;
+    }
+
+
+    QSqlQuery a_query = QSqlQuery(database);
+    QString query = "SELECT region.name, region.id, answers_data.question_id, questions.question, answer_id, answers.answer, count(answer_id) FROM answers_data  inner join questionnaire on answers_data.questionnaire_id=questionnaire.id inner join place on questionnaire.place_id=place.id inner join region on region.id=place.region_id inner join questions on answers_data.question_id = questions.id inner join answers on answer_id=answers.id group by answer_id, answers_data.question_id, region.id order by region.id, questions.question, answers.answer";
+    if (!a_query.exec(query)) {
+         qDebug() << "Ошибка запроса отчета: " << a_query.lastError().text();
+         return;
+    }
+
+    // формирование отчета
+    out << "<html>\n" << "<head>\n" << "meta Content=\"Text/html;charsrt=Windows-1251\">\n" <<
+           QString("<title>%1</title>\n").arg("Report") <<
+
+           "<style>"
+           "table {"
+            "width: 100%; /* Ширина таблицы */"
+           "}"
+           "td { "
+            "text-align: left; /* Выравнивание по лево */"
+            "border-bottom: none;"
+           "}"
+           "td, th {"
+            "padding: 1px; /* Поля в ячейках */"
+           "}"
+            "th {"
+            "border-top: 1px dashed;"
+            "}"
+         "  </style>"
+
+           "</head>\n"
+           "<body bgcolor = #ffffff link=#5000A0>\n";
+
+
+    // маркеры смены группы
+    QString val01= ""; // район
+    QString val02= ""; // вопрос
+    // счетчик для количества ответов в вопросе
+    int countA=0;
+
+    // титульный
+    QSqlQuery t_query = QSqlQuery(database);
+    t_query.exec("SELECT option_data FROM setings WHERE option_name=\"Наименование анкеты\"");
+    t_query.next();
+    out << QString("<h2>ОТЧЕТ по %1 </h2>").arg(t_query.value(0).toString());
+
+    // данные
+    out <<  "<table>\n";
+    while (a_query.next()) {
+        // печать категорий
+
+        // вывод итога прошлой группы
+        if (val02!=a_query.value(3).toString()) {
+            if(countA!=0) {
+                out << "<tr>";
+                out <<  QString("<td></td>");
+                out <<  QString("<td></td>");
+                out <<  QString("<td align=right><i>ИТОГО по вопросу:</i></td>");
+                out <<  QString("<td align=right><i>%1</i></td>").arg(countA);
+                countA=0;
+             }
+        }
+
+        // Район - верхняя категория
+        if (val01!=a_query.value(0).toString()) {
+            // если поменялось место проведения, то пропечатываем название запоминаем новое название
+            out << "<tr>";
+            out <<  QString("<th colspan=\"4\" align=left> <h2> %1 </h2></th>").arg(a_query.value(0).toString());
+            // запоминаем новое
+            val01= a_query.value(0).toString();
+            out << "</tr>\n";
+
+        }
+
+        // Вопрос
+        if (val02!=a_query.value(3).toString()) {
+            // если поменялся вопрос, то пропечатываем название, сбрасываем счетчик, запоминаем новое название
+            out << "<tr>";
+            out <<  QString("<td></td>");
+            out <<  QString("<th colspan=\"3\" align=left>%1 </th>").arg((!a_query.value(3).toString().isEmpty())? a_query.value(3).toString():QString("&nbsp;"));
+            // запоминаем новое
+            val02= a_query.value(3).toString();
+            out << "</tr>\n";
+        }
+
+
+
+        out << "<tr>";
+        // печать основных данных
+        out <<  QString("<td></td>");
+        out <<  QString("<td></td>");
+        out <<  QString("<td  width=\"80%\">%1 </td>").arg((!a_query.value(5).toString().isEmpty())? a_query.value(5).toString():QString("&nbsp;"));
+        out <<  QString("<td >%1 </td>").arg((!a_query.value(6).toString().isEmpty())? a_query.value(6).toString():QString("&nbsp;"));
+
+        //добавляем текущее значение
+        countA=countA+a_query.value(6).toInt();
+
+        out << "</tr>\n";
+    }
+
+    // вывод итога ппоследней группы
+    if(countA!=0) {
+        out << "<tr>";
+        out <<  QString("<td></td>");
+        out <<  QString("<td></td>");
+        out <<  QString("<td align=right><i>ИТОГО по вопросу:</i></td>");
+        out <<  QString("<td align=right><i>%1</i></td>").arg(countA);
+        countA=0;
+     }
+
+    out << "</table>\n";
+
+
+
+    out << "</body>\n" << "</html>\n";
+
+//    qDebug() << out.readAll();
+    // печать
+    QTextDocument document;
+    document.setHtml(stringStream);
+
+    QPrinter printer(QPrinter::PrinterResolution);
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    //printer.setPaperSize(QPrinter::A4);
+    printer.setOutputFileName("rep_ry.pdf");
+    printer.setPageMargins(QMarginsF(1, 1, 1, 1));
+
+    document.print(&printer);
+
+    // откровем созданный отчет
+    QDesktopServices::openUrl(QUrl(QUrl::fromLocalFile("rep_ry.pdf")));
+
+}
+
+
+
 
 void MainWindow::on_actionOpenBase_triggered()
 {
@@ -384,12 +538,15 @@ void MainWindow::on_actionOpenBase_triggered()
             ui->actionRegion->setEnabled(true);
             ui->actionQuestionnaire->setEnabled(true);
             ui->actionEditQuestions->setEnabled(true);
+            ui->actionProfil->setEnabled(true);
             ui->actionReportMain->setEnabled(true);
+            ui->actionReportMain_r->setEnabled(true);
             ui->actionOpenBase->setEnabled(false);
             ui->actionCloseBase->setEnabled(true);
 
             ui->actionSaveAs->setEnabled(true);
             ui->actionReportS->setEnabled(true);
+            ui->actionReportS_US->setEnabled(true);
             ui->actionSettings->setEnabled(true);
 
             //ui->actionSettings->setEnabled(true);
@@ -415,13 +572,16 @@ void MainWindow::on_actionCloseBase_triggered()
     ui->actionPlace->setEnabled(false);
     ui->actionRegion->setEnabled(false);
     ui->actionQuestionnaire->setEnabled(false);
+    ui->actionProfil->setEnabled(false);
     ui->actionEditQuestions->setEnabled(false);
     ui->actionReportMain->setEnabled(false);
+    ui->actionReportMain_r->setEnabled(false);
     ui->actionCloseBase->setEnabled(false);
     ui->actionOpenBase->setEnabled(true);
 
     ui->actionSaveAs->setEnabled(false);
     ui->actionReportS->setEnabled(false);
+    ui->actionReportS_US->setEnabled(false);
     ui->actionSettings->setEnabled(false);
 
 }
@@ -519,7 +679,8 @@ void MainWindow::on_actionNewBase_triggered()
                  "question     TEXT,"
                  "some_answers BOOLEAN DEFAULT (false),"
                  "be_empty     BOOLEAN DEFAULT (false),"
-                 "satisfaction BOOLEAN DEFAULT (false));";
+                 "satisfaction BOOLEAN DEFAULT (false),";
+                 "profile_st   BOOLEAN DEFAULT (false));";
          if (!a_query.exec(str))
              qDebug() << "таблица вопросов: " << a_query.lastError().text();
 
@@ -549,7 +710,7 @@ void MainWindow::on_actionNewBase_triggered()
          if (!a_query.exec(str))
              qDebug() << "таблица настроек: " << a_query.lastError().text();
          // вставить значения опций
-         str = "INSERT INTO setings(option_name) values ('Наименование анкеты'),('Примечание');";
+         str = "INSERT INTO setings(option_name) values ('Наименование анкеты'),('Примечание'),('ID ответа СМП'),('ID вопроса контроля'),('ID ответа контроля');";
          if (!a_query.exec(str))
              qDebug() << "таблица настроек: " << a_query.lastError().text();
 
@@ -568,7 +729,7 @@ void MainWindow::on_actionNewBase_triggered()
 
 void MainWindow::on_actionReportS_triggered()
 {
-    // отчет по удовлетворенности
+    // отчет по удовлетворенности с подгруппами (учитывае вопрос с подпрофилями)
     // формирование и печать
 
     QString stringStream;
@@ -584,7 +745,8 @@ void MainWindow::on_actionReportS_triggered()
 
 
     QSqlQuery a_query = QSqlQuery(database);
-    QString query = "SELECT region.name, profil.profil_name, count(questions.id) as count_questions, count(answers.satisfaction) FROM answers_data  inner join questionnaire on answers_data.questionnaire_id=questionnaire.id inner join place on questionnaire.place_id=place.id inner join region on place.region_id=region.id inner join profil on place.profil_id=profil.id inner join questions on answers_data.question_id = questions.id inner join answers on answer_id=answers.id WHERE questions.satisfaction = TRUE GROUP BY region.name, profil.profil_name";
+//    QString query = "SELECT region.name, profil.profil_name, count(questions.id) as count_questions, count(answers.satisfaction) FROM answers_data  inner join questionnaire on answers_data.questionnaire_id=questionnaire.id inner join place on questionnaire.place_id=place.id inner join region on place.region_id=region.id inner join profil on place.profil_id=profil.id inner join questions on answers_data.question_id = questions.id inner join answers on answer_id=answers.id WHERE questions.satisfaction = TRUE GROUP BY region.name, profil.profil_name";
+    QString query = "SELECT region.name, profil.profil_name, st_profile_name, count(questions.id) as count_questions, count(answers.satisfaction) FROM answers_data  inner join questionnaire on answers_data.questionnaire_id=questionnaire.id inner join place on questionnaire.place_id=place.id inner join region on place.region_id=region.id inner join profil on place.profil_id=profil.id inner join questions on answers_data.question_id = questions.id inner join answers on answer_id=answers.id inner join (SELECT answers_data.questionnaire_id as st_questionnaire_id, answers.answer as st_profile_name FROM answers_data  inner join questions on answers_data.question_id = questions.id inner join answers on answer_id=answers.id WHERE questions.profile_st = TRUE) on answers_data.questionnaire_id=st_questionnaire_id WHERE questions.satisfaction = TRUE GROUP BY region.name, profil.profil_name, st_profile_name";
     if (!a_query.exec(query)) {
          qDebug() << "Ошибка запроса отчета: " << a_query.lastError().text();
          return;
@@ -621,30 +783,58 @@ void MainWindow::on_actionReportS_triggered()
     QSqlQuery t_query = QSqlQuery(database);
     t_query.exec("SELECT option_data FROM setings WHERE option_name=\"Наименование анкеты\"");
     t_query.next();
-    out << QString("<h2>ОТЧЕТ по удовлетвореннсти по %1 </h2>").arg(t_query.value(0).toString());
+    out << QString("<h2>ОТЧЕТ по удовлетвореннсти по подгруппам по %1 </h2>").arg(t_query.value(0).toString());
 
     // данные
     out <<  "<table>\n";
     // титульный
     out << "<tr>";
-    out <<  QString("<th> Район </th> <th> Профиль </th> <th> Количество опрошенных</th>  <th> Количество удовлетворенных </th>");
+    out <<  QString("<th> Район </th> <th> Профиль </th> <th> Категория</th> <th> Количество опрошенных</th>  <th> Количество удовлетворенных </th>");
     out << "</tr>";
+
+    QString kat01="";
+    QString kat02="";
+    int countA=0;
+    int countB=0;
 
     while (a_query.next()) {
         // печать категорий
 
+        if (kat01!=a_query.value(0).toString() || kat02!=a_query.value(1).toString()) {
+            if(countA!=0) {
+                out << "<tr>";
+                out <<  QString("<td></td>");
+                out <<  QString("<td></td>");
+                out <<  QString("<td align=right><b>ИТОГО:</b></td>");
+                out <<  QString("<td align='center'><b>%1</b></td>").arg(countA);
+                out <<  QString("<td align='center'><b>%1</b></td>").arg(countB);
+                countA=0;
+                countB=0;
+             }
+        }
 
-        out << "<tr>";
+         out << "<tr>";
         // печать данных
-        out <<  QString("<td  width=\"80%\">%1 </td>").arg((!a_query.value(0).toString().isEmpty())? a_query.value(0).toString():QString("&nbsp;"));
+        out <<  QString("<td  width=\"30%\">%1 </td>").arg((!a_query.value(0).toString().isEmpty())? a_query.value(0).toString():QString("&nbsp;"));
         out <<  QString("<td >%1 </td>").arg((!a_query.value(1).toString().isEmpty())? a_query.value(1).toString():QString("&nbsp;"));
-        out <<  QString("<td align='center'>%1 </td>").arg((!a_query.value(2).toString().isEmpty())? a_query.value(2).toString():QString("&nbsp;"));
+        out <<  QString("<td >%1 </td>").arg((!a_query.value(2).toString().isEmpty())? a_query.value(2).toString():QString("&nbsp;"));
         out <<  QString("<td align='center'>%1 </td>").arg((!a_query.value(3).toString().isEmpty())? a_query.value(3).toString():QString("&nbsp;"));
+        out <<  QString("<td align='center'>%1 </td>").arg((!a_query.value(4).toString().isEmpty())? a_query.value(4).toString():QString("&nbsp;"));
 
+        kat01=a_query.value(0).toString();
+        kat02=a_query.value(1).toString();
+        countA += a_query.value(3).toInt();
+        countB += a_query.value(4).toInt();
 
         out << "</tr>";
     }
-
+// последние итоги
+    out << "<tr>";
+    out <<  QString("<td></td>");
+    out <<  QString("<td></td>");
+    out <<  QString("<td align=right><b>ИТОГО:</b></td>");
+    out <<  QString("<td align='center'><b>%1</b></td>").arg(countA);
+    out <<  QString("<td align='center'><b>%1</b></td>").arg(countB);
 
     out << "</table>";
 
@@ -659,9 +849,9 @@ void MainWindow::on_actionReportS_triggered()
 
     QPrinter printer(QPrinter::PrinterResolution);
     printer.setOutputFormat(QPrinter::PdfFormat);
-    printer.setPaperSize(QPrinter::A4);
+    //printer.setPaperSize(QPrinter::A4);
     printer.setOutputFileName("rep_stf.pdf");
-    printer.setPageMargins(QMarginsF(15, 15, 15, 15));
+    printer.setPageMargins(QMarginsF(1, 1, 1, 1));
 
     document.print(&printer);
 
@@ -671,9 +861,131 @@ void MainWindow::on_actionReportS_triggered()
 
 }
 
+void MainWindow::on_actionReportS_US_triggered()
+{
+    // отчет по удовлетворенности простой
+    // формирование и печать
+
+    QString stringStream;
+    QTextStream out(&stringStream);
+
+    // запрос
+    // база открыта?
+    if(!database.isOpen()){
+          qDebug() << "База не открыта!";
+          QMessageBox::critical(this,"Error","База не открыта!");
+          return;
+    }
+
+
+    QSqlQuery a_query = QSqlQuery(database);
+    QString query = "SELECT region.name, profil.profil_name, count(questions.id) as count_questions, count(answers.satisfaction) FROM answers_data  inner join questionnaire on answers_data.questionnaire_id=questionnaire.id inner join place on questionnaire.place_id=place.id inner join region on place.region_id=region.id inner join profil on place.profil_id=profil.id inner join questions on answers_data.question_id = questions.id inner join answers on answer_id=answers.id WHERE questions.satisfaction = TRUE GROUP BY region.name, profil.profil_name";
+    if (!a_query.exec(query)) {
+         qDebug() << "Ошибка запроса отчета: " << a_query.lastError().text();
+         return;
+    }
+
+    // формирование отчета
+    out << "<html>\n" << "<head>\n" << "meta Content=\"Text/html;charsrt=Windows-1251\">\n" <<
+           QString("<title>%1</title>\n").arg("Report") <<
+
+           "<style>"
+           "table {"
+            "width: 100%; /* Ширина таблицы */"
+           "}"
+           "td { "
+            "text-align: left; /* Выравнивание по лево */"
+            "border-bottom: none;"
+           "}"
+           "td, th {"
+            "padding: 1px; /* Поля в ячейках */"
+           "}"
+            "th {"
+            "border-top: 1px dashed;"
+            "}"
+         "  </style>"
+
+           "</head>\n"
+           "<body bgcolor = #ffffff link=#5000A0>\n";
+
+    // титульный
+    QSqlQuery t_query = QSqlQuery(database);
+    t_query.exec("SELECT option_data FROM setings WHERE option_name=\"Наименование анкеты\"");
+    t_query.next();
+    out << QString("<h2>ОТЧЕТ по удовлетвореннсти по %1 </h2>").arg(t_query.value(0).toString());
+
+    // данные
+    out <<  "<table>\n";
+    // титульный
+    out << "<tr>";
+    out <<  QString("<th> Район </th> <th> Профиль </th> <th> Количество опрошенных</th>  <th> Количество удовлетворенных </th>");
+    out << "</tr>";
+
+    QString kat01="";
+    int countA=0;
+    int countB=0;
+
+    while (a_query.next()) {
+        // печать групп
+
+        if (kat01!=a_query.value(0).toString()) {
+            if(countA!=0) {
+                out << "<tr>";
+                out <<  QString("<td></td>");
+                out <<  QString("<td align=right><b>ИТОГО:</b></td>");
+                out <<  QString("<td align='center'><b>%1</b></td>").arg(countA);
+                out <<  QString("<td align='center'><b>%1</b></td>").arg(countB);
+                countA=0;
+                countB=0;
+             }
+        }
+
+         out << "<tr>";
+        // печать данных
+        out <<  QString("<td  width=\"30%\">%1 </td>").arg((!a_query.value(0).toString().isEmpty())? a_query.value(0).toString():QString("&nbsp;"));
+        out <<  QString("<td >%1 </td>").arg((!a_query.value(1).toString().isEmpty())? a_query.value(1).toString():QString("&nbsp;"));
+        out <<  QString("<td align='center'>%1 </td>").arg((!a_query.value(2).toString().isEmpty())? a_query.value(2).toString():QString("&nbsp;"));
+        out <<  QString("<td align='center'>%1 </td>").arg((!a_query.value(3).toString().isEmpty())? a_query.value(3).toString():QString("&nbsp;"));
+
+        kat01=a_query.value(0).toString();
+        countA += a_query.value(2).toInt();
+        countB += a_query.value(3).toInt();
+
+        out << "</tr>";
+    }
+// последние итоги
+    out << "<tr>";
+    out <<  QString("<td></td>");
+    out <<  QString("<td align=right><b>ИТОГО:</b></td>");
+    out <<  QString("<td align='center'><b>%1</b></td>").arg(countA);
+    out <<  QString("<td align='center'><b>%1</b></td>").arg(countB);
+
+    out << "</table>";
+
+
+
+    out << "</body>\n" << "</html>\n";
+
+//    qDebug() << out.readAll();
+    // печать
+    QTextDocument document;
+    document.setHtml(stringStream);
+
+    QPrinter printer(QPrinter::PrinterResolution);
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    printer.setOutputFileName("rep_stfus.pdf");
+    printer.setPageMargins(QMarginsF(1, 1, 1, 1));
+
+    document.print(&printer);
+
+    // откровем созданный отчет
+    QDesktopServices::openUrl(QUrl(QUrl::fromLocalFile("rep_stfus.pdf")));
+}
+
+
 void MainWindow::on_actionAbout_triggered()
 {
-    QMessageBox::information(this,"Info","Программа обработки результатов анкетирования. \n\nGorINIch`2020 ver0.02\nggorinich@gmail.com");
+    QMessageBox::information(this,"Info","Программа обработки результатов анкетирования. \n\nGorINIch`2022 ver0.07\ngGorINIch@gmail.com");
 }
 
 void MainWindow::on_actionFile01_triggered()
@@ -707,5 +1019,7 @@ void MainWindow::on_actionFile03_triggered()
 
 
 }
+
+
 
 

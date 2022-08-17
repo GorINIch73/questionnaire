@@ -64,6 +64,10 @@ private slots:
     void slot_goQuery(QString sq); // запуск запроса
 
 
+    void on_actionReportS_US_triggered();
+
+    void on_actionReportMain_r_triggered();
+
 private:
     Ui::MainWindow *ui;
      //QMdiArea *mdiArea;

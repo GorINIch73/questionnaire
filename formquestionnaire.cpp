@@ -188,9 +188,9 @@ void FormQuestionnaire::on_pushButton_Add_clicked()
 //   return;
     //добавляем в данные по ответам все вопросы
 
-    // запрос на получение перечня вопросов
+    // запрос на получение перечня вопросов сортировка по написанию (номеру в начале) вопроса!
     QSqlQuery q_query = QSqlQuery(base);
-    q_query.prepare("SELECT id FROM questions");
+    q_query.prepare("SELECT id FROM questions ORDER by questions.question");
     if (!q_query.exec())
         qDebug() << "Ошибка получения перечня вопросов: " << q_query.lastError().text();
 
@@ -390,22 +390,86 @@ void FormQuestionnaire::on_pushButton_erase_clicked()
 
 }
 
+
+void FormQuestionnaire::on_pushButton_queryRep2_clicked()
+{
+    //запрос на свод по районам
+    emit signalFromQuery("SELECT region.name, region.id, answers_data.question_id, questions.question, answer_id, answers.answer, count(answer_id) FROM answers_data  inner join questionnaire on answers_data.questionnaire_id=questionnaire.id inner join place on questionnaire.place_id=place.id inner join region on region.id=place.region_id inner join questions on answers_data.question_id = questions.id inner join answers on answer_id=answers.id group by answer_id, answers_data.question_id, region.id order by region.id, questions.question, answers.answer");
+
+}
+
+
 void FormQuestionnaire::on_pushButton_queryRep_clicked()
 {
     //запрос на свод по местам оказания
-    emit signalFromQuery("SELECT place.name, profil.profil_name, questionnaire.place_id, answers_data.question_id, questions.question, answer_id, answers.answer, count(answer_id) FROM answers_data  inner join questionnaire on answers_data.questionnaire_id=questionnaire.id inner join place on questionnaire.place_id=place.id inner join profil on place.profil_id=profil.id inner join questions on answers_data.question_id = questions.id inner join answers on answer_id=answers.id group by answer_id, answers_data.question_id, questionnaire.place_id order by questionnaire.place_id, answers_data.question_id");
+//    emit signalFromQuery("SELECT place.name, profil.profil_name, questionnaire.place_id, answers_data.question_id, questions.question, answer_id, answers.answer, count(answer_id) FROM answers_data  inner join questionnaire on answers_data.questionnaire_id=questionnaire.id inner join place on questionnaire.place_id=place.id inner join profil on place.profil_id=profil.id inner join questions on answers_data.question_id = questions.id inner join answers on answer_id=answers.id group by answer_id, answers_data.question_id, questionnaire.place_id order by questionnaire.place_id, answers_data.question_id");
+    emit signalFromQuery("SELECT place.name, profil.profil_name, questionnaire.place_id, answers_data.question_id, questions.question, answer_id, answers.answer, count(answer_id) FROM answers_data  inner join questionnaire on answers_data.questionnaire_id=questionnaire.id inner join place on questionnaire.place_id=place.id inner join profil on place.profil_id=profil.id inner join questions on answers_data.question_id = questions.id inner join answers on answer_id=answers.id group by answer_id, answers_data.question_id, questionnaire.place_id order by questionnaire.place_id, questions.question, answers.answer");
+
 }
 
 void FormQuestionnaire::on_pushButton_Rep_U_clicked()
 {
-    //запрос на свод по удовлетворенности
-    emit signalFromQuery("SELECT region.name, profil.profil_name, count(questions.id) as count_questions, count(answers.satisfaction) FROM answers_data  inner join questionnaire on answers_data.questionnaire_id=questionnaire.id inner join place on questionnaire.place_id=place.id inner join region on place.region_id=region.id inner join profil on place.profil_id=profil.id inner join questions on answers_data.question_id = questions.id inner join answers on answer_id=answers.id WHERE questions.satisfaction = TRUE GROUP BY region.name, profil.profil_name");
+    //запрос на свод по удовлетворенности с учетом группы профиля
+//    emit signalFromQuery("SELECT region.name, profil.profil_name, count(questions.id) as count_questions, count(answers.satisfaction) FROM answers_data  inner join questionnaire on answers_data.questionnaire_id=questionnaire.id inner join place on questionnaire.place_id=place.id inner join region on place.region_id=region.id inner join profil on place.profil_id=profil.id inner join questions on answers_data.question_id = questions.id inner join answers on answer_id=answers.id WHERE questions.satisfaction = TRUE GROUP BY region.name, profil.profil_name");
+    emit signalFromQuery("SELECT region.name, profil.profil_name, st_profile_name, count(questions.id) as count_questions, count(answers.satisfaction) FROM answers_data  inner join questionnaire on answers_data.questionnaire_id=questionnaire.id inner join place on questionnaire.place_id=place.id inner join region on place.region_id=region.id inner join profil on place.profil_id=profil.id inner join questions on answers_data.question_id = questions.id inner join answers on answer_id=answers.id inner join (SELECT answers_data.questionnaire_id as st_questionnaire_id, answers.answer as st_profile_name FROM answers_data  inner join questions on answers_data.question_id = questions.id inner join answers on answer_id=answers.id WHERE questions.profile_st = TRUE) on answers_data.questionnaire_id=st_questionnaire_id WHERE questions.satisfaction = TRUE GROUP BY region.name, profil.profil_name, st_profile_name");
+
+}
+
+
+void FormQuestionnaire::on_pushButton_Rep_US_clicked()
+{
+    //запрос на свод по удовлетворенности по профилю
+   emit signalFromQuery("SELECT region.name, profil.profil_name, count(questions.id) as count_questions, count(answers.satisfaction) FROM answers_data  inner join questionnaire on answers_data.questionnaire_id=questionnaire.id inner join place on questionnaire.place_id=place.id inner join region on place.region_id=region.id inner join profil on place.profil_id=profil.id inner join questions on answers_data.question_id = questions.id inner join answers on answer_id=answers.id WHERE questions.satisfaction = TRUE GROUP BY region.name, profil.profil_name");
 
 }
 
 void FormQuestionnaire::on_pushButton_ErrS_clicked()
 {
+    // прочитать ID из настроек
+    // 76 14 78
+    QSqlQuery t_query = QSqlQuery(base);
+    t_query.exec("SELECT option_data FROM setings WHERE option_name=\"ID ответа СМП\"");
+    t_query.next();
+    QString ID_SMP =t_query.value(0).toString();
+    t_query.exec("SELECT option_data FROM setings WHERE option_name=\"ID вопроса контроля\"");
+    t_query.next();
+    QString ID_QC =t_query.value(0).toString();
+    t_query.exec("SELECT option_data FROM setings WHERE option_name=\"ID ответа контроля\"");
+    t_query.next();
+    QString ID_AC =t_query.value(0).toString();
+
+    if (ID_SMP.isEmpty() || ID_QC.isEmpty() || ID_AC.isEmpty()) {
+
+        QMessageBox::critical(this,"Ошибка","Недостаточно данных по ID вопросов!\nЗадайте ID вопросов и ответов по МСП в настройках!");
+        return;
+    }
+
     //запрос на ошибки в вопросе по МСП
-    emit signalFromQuery("SELECT * FROM answers_data WHERE answers_data.questionnaire_id IN (SELECT answers_data.questionnaire_id FROM answers_data WHERE answers_data.answer_id=76) AND answers_data.question_id=14 AND NOT answers_data.answer_id=78");
+//    emit signalFromQuery("SELECT * FROM answers_data WHERE answers_data.questionnaire_id IN (SELECT answers_data.questionnaire_id FROM answers_data WHERE answers_data.answer_id=76) AND answers_data.question_id=14 AND NOT answers_data.answer_id=78");
+    emit signalFromQuery(QString("SELECT * FROM answers_data WHERE answers_data.questionnaire_id IN (SELECT answers_data.questionnaire_id FROM answers_data WHERE answers_data.answer_id=76) AND answers_data.question_id=14 AND NOT answers_data.answer_id=78").arg(ID_SMP).arg(ID_QC).arg(ID_AC));
 
 }
+
+void FormQuestionnaire::on_pushButton_list_clicked()
+{
+    //запрос на список сортировака по анкетам
+    emit signalFromQuery("SELECT questionnaire.id as \"номер анкеты\", place.name, profil.profil_name, questionnaire.place_id, answers_data.question_id, questions.question, answer_id, answers.answer FROM answers_data  inner join questionnaire on answers_data.questionnaire_id=questionnaire.id inner join place on questionnaire.place_id=place.id inner join profil on place.profil_id=profil.id inner join questions on answers_data.question_id = questions.id inner join answers on answer_id=answers.id order by questionnaire.id, questions.question, answers.answer");
+
+}
+
+void FormQuestionnaire::on_pushButton_list2_clicked()
+{
+    //запрос на список сортировака по вопросам
+    emit signalFromQuery("SELECT place.name, profil.profil_name, questionnaire.place_id, questionnaire.id as \"номер анкеты\", answers_data.question_id, questions.question, answer_id, answers.answer FROM answers_data  inner join questionnaire on answers_data.questionnaire_id=questionnaire.id inner join place on questionnaire.place_id=place.id inner join profil on place.profil_id=profil.id inner join questions on answers_data.question_id = questions.id inner join answers on answer_id=answers.id order by place.name, questions.question, answers.answer");
+
+}
+
+void FormQuestionnaire::on_pushButton_null_clicked()
+{
+    //запрос на список анкет с пустыми ответами
+    emit signalFromQuery("SELECT questionnaire_id, question_id  FROM answers_data WHERE answer_id IS NULL");
+}
+
+
+
+

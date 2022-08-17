@@ -60,6 +60,16 @@ private slots:
 
     void on_pushButton_ErrS_clicked();
 
+    void on_pushButton_list_clicked();
+
+    void on_pushButton_list2_clicked();
+
+    void on_pushButton_null_clicked();
+
+    void on_pushButton_Rep_US_clicked();
+
+    void on_pushButton_queryRep2_clicked();
+
 private:
     Ui::FormQuestionnaire *ui;
 

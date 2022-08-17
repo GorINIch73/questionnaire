@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1135</width>
-    <height>725</height>
+    <width>1139</width>
+    <height>871</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -139,6 +139,12 @@
           <iconset resource="res.qrc">
            <normaloff>:/pix/add.png</normaloff>:/pix/add.png</iconset>
          </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
         </widget>
        </item>
        <item>
@@ -177,6 +183,26 @@
         </spacer>
        </item>
        <item>
+        <widget class="QPushButton" name="pushButton_queryRep2">
+         <property name="toolTip">
+          <string>Отчет по районам</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="res.qrc">
+           <normaloff>:/pix/queryS.png</normaloff>:/pix/queryS.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="pushButton_queryRep">
          <property name="toolTip">
           <string>Отчет по местам проведения</string>
@@ -197,9 +223,69 @@
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="pushButton_Rep_US">
+         <property name="toolTip">
+          <string>Удовлетворенность по профилю</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="res.qrc">
+           <normaloff>:/pix/queryS.png</normaloff>:/pix/queryS.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="pushButton_Rep_U">
          <property name="toolTip">
-          <string>Отчет по удовлетворенности</string>
+          <string>Удовлетворенносить по профилю и группе</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="res.qrc">
+           <normaloff>:/pix/queryS.png</normaloff>:/pix/queryS.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_list">
+         <property name="toolTip">
+          <string>Список ответов по анкетам</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="res.qrc">
+           <normaloff>:/pix/query.png</normaloff>:/pix/query.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_list2">
+         <property name="toolTip">
+          <string>Список ответов по вопросам</string>
          </property>
          <property name="text">
           <string/>
@@ -220,6 +306,26 @@
         <widget class="QPushButton" name="pushButton_ErrS">
          <property name="toolTip">
           <string>Проверка на ошибки в ответе МСП</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="res.qrc">
+           <normaloff>:/pix/queryC.png</normaloff>:/pix/queryC.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_null">
+         <property name="toolTip">
+          <string>Прошущен ответ</string>
          </property>
          <property name="text">
           <string/>

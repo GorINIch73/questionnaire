@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1168</width>
-    <height>664</height>
+    <width>1125</width>
+    <height>878</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,7 +32,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1168</width>
+     <width>1125</width>
      <height>21</height>
     </rect>
    </property>
@@ -96,7 +96,9 @@
    </attribute>
    <addaction name="actionQuestionnaire"/>
    <addaction name="separator"/>
+   <addaction name="actionReportMain_r"/>
    <addaction name="actionReportMain"/>
+   <addaction name="actionReportS_US"/>
    <addaction name="actionReportS"/>
    <addaction name="separator"/>
   </widget>
@@ -172,7 +174,7 @@
     <string>Отчет основной</string>
    </property>
    <property name="toolTip">
-    <string>Отчет по анкетам</string>
+    <string>Отчет по месту и профилю</string>
    </property>
   </action>
   <action name="actionOpenBase">
@@ -219,13 +221,13 @@
   <action name="actionReportS">
    <property name="icon">
     <iconset resource="res.qrc">
-     <normaloff>:/pix/query.png</normaloff>:/pix/query.png</iconset>
+     <normaloff>:/pix/queryS.png</normaloff>:/pix/queryS.png</iconset>
    </property>
    <property name="text">
     <string>Отчет по удовлетворенности</string>
    </property>
    <property name="toolTip">
-    <string>Отчет по удовлетворенности</string>
+    <string>Отчет по удовлетворенности с учетом признака</string>
    </property>
   </action>
   <action name="actionAbout">
@@ -255,6 +257,30 @@
    </property>
    <property name="text">
     <string>Профили</string>
+   </property>
+  </action>
+  <action name="actionReportS_US">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/pix/queryS.png</normaloff>:/pix/queryS.png</iconset>
+   </property>
+   <property name="text">
+    <string>Отчет по удовлетворенности</string>
+   </property>
+   <property name="toolTip">
+    <string>Отчет по удовлетворенности</string>
+   </property>
+  </action>
+  <action name="actionReportMain_r">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/pix/queryS.png</normaloff>:/pix/queryS.png</iconset>
+   </property>
+   <property name="text">
+    <string>Отчет основной</string>
+   </property>
+   <property name="toolTip">
+    <string>Отчет по районам</string>
    </property>
   </action>
  </widget>
