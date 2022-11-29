@@ -25,6 +25,7 @@ private slots:
     void on_tableView_questions_clicked(const QModelIndex &index);
 
     void slotSelectionChange(const QItemSelection &current, const QItemSelection &previous);
+    void slotSelectionAChange(const QItemSelection &current, const QItemSelection &previous);
 
     void on_pushButton_QAdd_clicked();
 

@@ -36,11 +36,16 @@ void FormPlace::SetupTable()
 {
     //Таблица
     model->setTable("place");
+    model->setJoinMode(QSqlRelationalTableModel::LeftJoin); // что бы были видны пустые
+
     model->setRelation(2, QSqlRelation("region", "id", "name"));
+    model->setRelation(3, QSqlRelation("profil", "id", "profil_name"));
+
     // названия колонок
     model->setHeaderData(1,Qt::Horizontal,"Место проведения");
     model->setHeaderData(2,Qt::Horizontal,"Район");
-    model->setHeaderData(3,Qt::Horizontal,"Для отчета");
+    model->setHeaderData(3,Qt::Horizontal,"Профиль");
+    model->setHeaderData(4,Qt::Horizontal,"Для отчета");
     ui->tableView->setModel(model);
     ui->tableView->setItemDelegate(delegate);
     ui->tableView->setColumnHidden(0, true);    // Скрываем колонку с id записей
@@ -48,7 +53,10 @@ void FormPlace::SetupTable()
     ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows); // Разрешаем выделение строк
     ui->tableView->setSelectionMode(QAbstractItemView::SingleSelection); // Устанавливаем режим выделения лишь одно строки в таблице
     ui->tableView->horizontalHeader()->setStretchLastSection(true);
-    ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents); // по содержимому
+//    ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents); // по содержимому
+//    ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+    ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
 
 
 }

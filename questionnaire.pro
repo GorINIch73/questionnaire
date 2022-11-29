@@ -18,6 +18,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     formeditquestions.cpp \
     formplace.cpp \
+    formprofil.cpp \
+    formquery.cpp \
     formquestionnaire.cpp \
     formregion.cpp \
     formsettings.cpp \
@@ -29,6 +31,8 @@ HEADERS += \
     defining.h \
     formeditquestions.h \
     formplace.h \
+    formprofil.h \
+    formquery.h \
     formquestionnaire.h \
     formregion.h \
     formsettings.h \
@@ -38,6 +42,8 @@ HEADERS += \
 FORMS += \
     formeditquestions.ui \
     formplace.ui \
+    formprofil.ui \
+    formquery.ui \
     formquestionnaire.ui \
     formregion.ui \
     formsettings.ui \
@@ -48,7 +54,7 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-win32:RC_ICONS = $$PWD/pix/main.ico
+win32:RC_ICONS = $$PWD/pix/main_.ico
 
 RESOURCES += \
     res.qrc \

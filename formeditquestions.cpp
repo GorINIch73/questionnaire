@@ -33,6 +33,10 @@ FormEditQuestions::FormEditQuestions(QSqlDatabase db,QWidget *parent) :
     connect(ui->tableView_questions->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
                  SLOT(slotSelectionChange(const QItemSelection &, const QItemSelection &)));
 
+    // сигнал изменения строки выделения в tableView_answers
+    connect(ui->tableView_answers->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+                 SLOT(slotSelectionAChange(const QItemSelection &, const QItemSelection &)));
+
     // Enter по умолчанию на кнопку редактирования
     //ui->pushButton_ ->setDefault(true);
     //устанавливаем таблицу на первую запись
@@ -72,6 +76,7 @@ void FormEditQuestions::SetupTable()
     mapper->addMapping(ui->checkBox_some_answers , 2);
     mapper->addMapping(ui->checkBox_be_empty, 3);
     mapper->addMapping(ui->checkBox_satisfaction, 4);
+    mapper->addMapping(ui->checkBox_profile_st, 5);
     mapper->setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
 
 
@@ -79,16 +84,18 @@ void FormEditQuestions::SetupTable()
     //Таблица ответов
     modelAnswers->setTable("answers");
     // названия колонок
-    modelAnswers->setHeaderData(1,Qt::Horizontal,"Вопрос");
+//    modelAnswers->setHeaderData(1,Qt::Horizontal,"Вопрос");
     modelAnswers->setHeaderData(2,Qt::Horizontal,"Ответ");
+    modelAnswers->setHeaderData(3,Qt::Horizontal,"Является показателем удовлетвореннсти");
     ui->tableView_answers->setModel(modelAnswers);
-    ui->tableView_answers->setColumnHidden(0, true);    // Скрываем колонку с id записей
-    ui->tableView_answers->setColumnHidden(1, true);
+    ui->tableView_answers->setColumnHidden(0, true);    // Скрываем колонку с id ответа
+    ui->tableView_answers->setColumnHidden(1, true);     // Скрываем колонку с id вопроса
     //ui->tableView_answers->setEditTriggers(QAbstractItemView::NoEditTriggers);  //запрет редактирования
     ui->tableView_answers->setSelectionBehavior(QAbstractItemView::SelectRows); // Разрешаем выделение строк
     ui->tableView_answers->setSelectionMode(QAbstractItemView::SingleSelection); // Устанавливаем режим выделения лишь одно строки в таблице
     ui->tableView_answers->horizontalHeader()->setStretchLastSection(true);
-    ui->tableView_answers->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents); // по содержимому
+//    ui->tableView_answers->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents); // по содержимому
+    ui->tableView_answers->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
 }
 
@@ -103,6 +110,9 @@ void FormEditQuestions::on_tableView_questions_clicked(const QModelIndex &index)
 
 void FormEditQuestions::slotSelectionChange(const QItemSelection &current, const QItemSelection &previous)
 {
+    modelAnswers->submit();
+    modelQuestions->submit();
+
     // настраиваем фильтр ответов в зависимости от выбранного вопроса
     QString ff = QString(" question_id = \%1 ").arg(modelQuestions->data(modelQuestions->index(ui->tableView_questions->currentIndex().row(), 0)).toString());
 
@@ -119,8 +129,20 @@ void FormEditQuestions::slotSelectionChange(const QItemSelection &current, const
 
 }
 
+void FormEditQuestions::slotSelectionAChange(const QItemSelection &current, const QItemSelection &previous)
+{
+
+    // выводим ID ответа в трей
+//    QString ff = QString(" ID вопроса: \%1 ").arg(modelAnswers->data(modelAnswers->index(ui->tableView_answers->currentIndex().row(), 0)).toString());
+    ui->lineEdit_ID_A->setText(modelAnswers->data(modelAnswers->index(ui->tableView_answers->currentIndex().row(), 0)).toString());
+
+
+}
+
 void FormEditQuestions::on_pushButton_QAdd_clicked()
 {
+    modelAnswers->submit();
+    modelQuestions->submit();
     // добавление запись
     // определяем количество записей
     int row=modelQuestions->rowCount();
@@ -137,6 +159,9 @@ void FormEditQuestions::on_pushButton_QAdd_clicked()
 
 void FormEditQuestions::on_pushButton_QDel_clicked()
 {
+    modelAnswers->submit();
+    modelQuestions->submit();
+
     // удаление вопроса
 
     if(QMessageBox::Yes != QMessageBox::question(this, tr("Внимание!"),
@@ -165,7 +190,9 @@ void FormEditQuestions::on_pushButton_AAdd_clicked()
     // добапвление ответа
 
     // обновляем вопросы
-    modelQuestions->submitAll();
+    modelAnswers->submit();
+    modelQuestions->submit();
+//    modelQuestions->submitAll();
 
     // определяем количество записей
     int row=modelAnswers->rowCount();
@@ -197,6 +224,7 @@ void FormEditQuestions::on_pushButton_ADel_clicked()
 void FormEditQuestions::on_pushButton_First_clicked()
 {
     // прыгаем на первую
+//    modelQuestions->submit();
     ui->tableView_questions->selectRow(0);
 
 }
@@ -204,6 +232,7 @@ void FormEditQuestions::on_pushButton_First_clicked()
 void FormEditQuestions::on_pushButton_Previous_clicked()
 {
     // прыгаем на предыдущую запись
+//    modelQuestions->submit();
     ui->tableView_questions->selectRow(ui->tableView_questions->currentIndex().row()-1);
 
 }
@@ -211,6 +240,7 @@ void FormEditQuestions::on_pushButton_Previous_clicked()
 void FormEditQuestions::on_pushButton_Next_clicked()
 {
     // прыгаем на следующую запись
+//    modelQuestions->submit();
     ui->tableView_questions->selectRow(ui->tableView_questions->currentIndex().row()+1);
 
 }
@@ -218,6 +248,7 @@ void FormEditQuestions::on_pushButton_Next_clicked()
 void FormEditQuestions::on_pushButton_Last_clicked()
 {
     // последняя запись
+//    modelQuestions->submit();
     ui->tableView_questions->selectRow(modelQuestions->rowCount()-1);
 
 }

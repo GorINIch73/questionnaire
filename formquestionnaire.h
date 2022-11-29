@@ -22,6 +22,11 @@ public:
     explicit FormQuestionnaire(QSqlDatabase db,QWidget *parent = nullptr);
     ~FormQuestionnaire();
 
+signals:
+
+    void signalFromQuery(QString sq); // сигнал для запроса
+
+
 private slots:
     void on_pushButtonClose_clicked();
 
@@ -41,11 +46,29 @@ private slots:
 
     void on_comboBox_Place_currentIndexChanged(int index);
 
-    void endEditSlot();
+    void endEditSlot(QWidget*,QAbstractItemDelegate::EndEditHint);
 
     void on_lineEdit_Flt_textChanged(const QString &arg1);
 
     void on_pushButton_ClrFlt_clicked();
+
+    void on_pushButton_erase_clicked();
+
+    void on_pushButton_queryRep_clicked();
+
+    void on_pushButton_Rep_U_clicked();
+
+    void on_pushButton_ErrS_clicked();
+
+    void on_pushButton_list_clicked();
+
+    void on_pushButton_list2_clicked();
+
+    void on_pushButton_null_clicked();
+
+    void on_pushButton_Rep_US_clicked();
+
+    void on_pushButton_queryRep2_clicked();
 
 private:
     Ui::FormQuestionnaire *ui;

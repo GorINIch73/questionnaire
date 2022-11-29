@@ -79,7 +79,7 @@ void FormSettings::on_pushButton_clicked()
                                                  tr("Уверены в удалении данных?")))  return;
 
     QSqlQuery a_query = QSqlQuery(base);
-
+ // очистка данных по анкетам
     // запрос на очистку ответов
     if (!a_query.exec("DELETE FROM answers_data;")) {
         qDebug() << "таблица ответов: " << a_query.lastError().text();
@@ -99,6 +99,65 @@ void FormSettings::on_pushButton_clicked()
     if (!a_query.exec("UPDATE sqlite_sequence set seq=0 WHERE Name='questionnaire'")) {
         qDebug() << "счетчик ответов: " << a_query.lastError().text();
     }
+
+  // очистка списка вопросов
+    if(ui->checkBox_clr_q->isChecked()) {
+        // запрос на очистку справоцника ответов
+        if (!a_query.exec("DELETE FROM answers;")) {
+            qDebug() << "справочника ответов: " << a_query.lastError().text();
+            return;
+        }
+        // сбрасываем счетчик автоинкремента id
+        if (!a_query.exec("UPDATE sqlite_sequence set seq=0 WHERE Name='answers'")) {
+            qDebug() << "счетчик справочника ответов: " << a_query.lastError().text();
+        }
+        // запрос на очистку справочника вопросов
+        if (!a_query.exec("DELETE FROM questions;")) {
+            qDebug() << "справочника вопросов: " << a_query.lastError().text();
+            return;
+        }
+        // сбрасываем счетчик автоинкремента id
+        if (!a_query.exec("UPDATE sqlite_sequence set seq=0 WHERE Name='questions'")) {
+            qDebug() << "счетчик справочника вопросов: " << a_query.lastError().text();
+        }
+    }
+  // очистка списка мест проведения профилей районов
+    if(ui->checkBox_clr_pl->isChecked()) {
+        // запрос на очистку справоцника мест
+        if (!a_query.exec("DELETE FROM place;")) {
+            qDebug() << "справочника мест: " << a_query.lastError().text();
+            return;
+        }
+        // сбрасываем счетчик автоинкремента id
+        if (!a_query.exec("UPDATE sqlite_sequence set seq=0 WHERE Name='place'")) {
+            qDebug() << "счетчик справочника мест: " << a_query.lastError().text();
+        }
+        // запрос на очистку справоцника районов
+        if (!a_query.exec("DELETE FROM region;")) {
+            qDebug() << "справочника районов: " << a_query.lastError().text();
+            return;
+        }
+        // сбрасываем счетчик автоинкремента id
+        if (!a_query.exec("UPDATE sqlite_sequence set seq=0 WHERE Name='region'")) {
+            qDebug() << "счетчик справочника районов: " << a_query.lastError().text();
+        }
+        // запрос на очистку справоцника профилей
+        if (!a_query.exec("DELETE FROM profil;")) {
+            qDebug() << "справочника профилей: " << a_query.lastError().text();
+            return;
+        }
+        // сбрасываем счетчик автоинкремента id
+        if (!a_query.exec("UPDATE sqlite_sequence set seq=0 WHERE Name='profil'")) {
+            qDebug() << "счетчик справочника профилей: " << a_query.lastError().text();
+        }
+
+
+
+
+
+
+    }
+
     //
     QMessageBox::information(this,"Info","Операция завершена.");
 
