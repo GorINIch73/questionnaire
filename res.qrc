@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <RCC>
     <qresource prefix="/">
         <file>pix/add.png</file>
@@ -24,3 +25,31 @@
         <file>pix/tools.png</file>
     </qresource>
 </RCC>
+=======
+<RCC>
+    <qresource prefix="/">
+        <file>pix/add.png</file>
+        <file>pix/anketa.png</file>
+        <file>pix/b.png</file>
+        <file>pix/bb.png</file>
+        <file>pix/clear.png</file>
+        <file>pix/del.png</file>
+        <file>pix/erase.png</file>
+        <file>pix/exit.png</file>
+        <file>pix/f.png</file>
+        <file>pix/ff.png</file>
+        <file>pix/main_.png</file>
+        <file>pix/place.png</file>
+        <file>pix/query.png</file>
+        <file>pix/queryC.png</file>
+        <file>pix/queryS.png</file>
+        <file>pix/questions.png</file>
+        <file>pix/quit.png</file>
+        <file>pix/region.png</file>
+        <file>pix/reload.png</file>
+        <file>pix/rep.png</file>
+        <file>pix/struct.png</file>
+        <file>pix/tools.png</file>
+    </qresource>
+</RCC>
+>>>>>>> 4eb8f4bbf917be0f1294fe3d8855518c914cbe29

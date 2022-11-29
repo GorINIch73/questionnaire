@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>MainWindow</class>
@@ -289,3 +290,296 @@
  </resources>
  <connections/>
 </ui>
+=======
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1125</width>
+    <height>878</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="documentMode">
+       <bool>true</bool>
+      </property>
+      <property name="tabsClosable">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1125</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuBase">
+    <property name="title">
+     <string>Файл</string>
+    </property>
+    <addaction name="actionOpenBase"/>
+    <addaction name="actionCloseBase"/>
+    <addaction name="actionSaveAs"/>
+    <addaction name="separator"/>
+    <addaction name="actionNewBase"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+    <addaction name="separator"/>
+    <addaction name="actionFile01"/>
+    <addaction name="actionFile02"/>
+    <addaction name="actionFile03"/>
+   </widget>
+   <widget class="QMenu" name="menuBase_2">
+    <property name="title">
+     <string>База</string>
+    </property>
+    <addaction name="actionQuestionnaire"/>
+    <addaction name="separator"/>
+    <addaction name="actionPlace"/>
+    <addaction name="actionRegion"/>
+    <addaction name="actionProfil"/>
+    <addaction name="actionEditQuestions"/>
+   </widget>
+   <widget class="QMenu" name="menuRepotr">
+    <property name="title">
+     <string>Отчеты</string>
+    </property>
+    <addaction name="actionReportMain"/>
+    <addaction name="actionReportS"/>
+   </widget>
+   <widget class="QMenu" name="menuSettings">
+    <property name="title">
+     <string>Разное</string>
+    </property>
+    <addaction name="actionSettings"/>
+    <addaction name="separator"/>
+    <addaction name="actionAbout"/>
+   </widget>
+   <addaction name="menuBase"/>
+   <addaction name="menuBase_2"/>
+   <addaction name="menuRepotr"/>
+   <addaction name="menuSettings"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionQuestionnaire"/>
+   <addaction name="separator"/>
+   <addaction name="actionReportMain_r"/>
+   <addaction name="actionReportMain"/>
+   <addaction name="actionReportS_US"/>
+   <addaction name="actionReportS"/>
+   <addaction name="separator"/>
+  </widget>
+  <action name="actionQuestionnaire">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/pix/anketa.png</normaloff>:/pix/anketa.png</iconset>
+   </property>
+   <property name="text">
+    <string>Анкеты</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;анкеты&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </action>
+  <action name="actionEditQuestions">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/pix/questions.png</normaloff>:/pix/questions.png</iconset>
+   </property>
+   <property name="text">
+    <string>Редактор вопросов</string>
+   </property>
+   <property name="toolTip">
+    <string>Редактирование вопросов</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/pix/tools.png</normaloff>:/pix/tools.png</iconset>
+   </property>
+   <property name="text">
+    <string>Настройки</string>
+   </property>
+   <property name="toolTip">
+    <string>Настройки</string>
+   </property>
+  </action>
+  <action name="actionRegion">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/pix/region.png</normaloff>:/pix/region.png</iconset>
+   </property>
+   <property name="text">
+    <string>Районы</string>
+   </property>
+   <property name="toolTip">
+    <string>Районы</string>
+   </property>
+  </action>
+  <action name="actionPlace">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/pix/place.png</normaloff>:/pix/place.png</iconset>
+   </property>
+   <property name="text">
+    <string>Места проведения</string>
+   </property>
+   <property name="toolTip">
+    <string>Места опроса (МО)</string>
+   </property>
+  </action>
+  <action name="actionReportMain">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/pix/queryS.png</normaloff>:/pix/queryS.png</iconset>
+   </property>
+   <property name="text">
+    <string>Отчет основной</string>
+   </property>
+   <property name="toolTip">
+    <string>Отчет по месту и профилю</string>
+   </property>
+  </action>
+  <action name="actionOpenBase">
+   <property name="text">
+    <string>Открыть</string>
+   </property>
+   <property name="toolTip">
+    <string>Открыть базу данных</string>
+   </property>
+  </action>
+  <action name="actionCloseBase">
+   <property name="text">
+    <string>Закрыть</string>
+   </property>
+   <property name="toolTip">
+    <string>Закрыть базу</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/pix/quit.png</normaloff>:/pix/quit.png</iconset>
+   </property>
+   <property name="text">
+    <string>Выход</string>
+   </property>
+  </action>
+  <action name="actionSaveAs">
+   <property name="text">
+    <string>Сохранить как</string>
+   </property>
+   <property name="toolTip">
+    <string>Сохранить как</string>
+   </property>
+  </action>
+  <action name="actionNewBase">
+   <property name="text">
+    <string>Новая база</string>
+   </property>
+   <property name="toolTip">
+    <string>Создать новую базу</string>
+   </property>
+  </action>
+  <action name="actionReportS">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/pix/queryS.png</normaloff>:/pix/queryS.png</iconset>
+   </property>
+   <property name="text">
+    <string>Отчет по удовлетворенности</string>
+   </property>
+   <property name="toolTip">
+    <string>Отчет по удовлетворенности с учетом признака</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>О программе</string>
+   </property>
+  </action>
+  <action name="actionFile01">
+   <property name="text">
+    <string/>
+   </property>
+  </action>
+  <action name="actionFile02">
+   <property name="text">
+    <string/>
+   </property>
+  </action>
+  <action name="actionFile03">
+   <property name="text">
+    <string/>
+   </property>
+  </action>
+  <action name="actionProfil">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/pix/struct.png</normaloff>:/pix/struct.png</iconset>
+   </property>
+   <property name="text">
+    <string>Профили</string>
+   </property>
+  </action>
+  <action name="actionReportS_US">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/pix/queryS.png</normaloff>:/pix/queryS.png</iconset>
+   </property>
+   <property name="text">
+    <string>Отчет по удовлетворенности</string>
+   </property>
+   <property name="toolTip">
+    <string>Отчет по удовлетворенности</string>
+   </property>
+  </action>
+  <action name="actionReportMain_r">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/pix/queryS.png</normaloff>:/pix/queryS.png</iconset>
+   </property>
+   <property name="text">
+    <string>Отчет основной</string>
+   </property>
+   <property name="toolTip">
+    <string>Отчет по районам</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="res.qrc"/>
+ </resources>
+ <connections/>
+</ui>
+>>>>>>> 4eb8f4bbf917be0f1294fe3d8855518c914cbe29
